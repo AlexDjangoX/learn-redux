@@ -42,12 +42,8 @@ const initialState = {
 export const fetchPosts = createAsyncThunk('posts/fetchPosts', async () => {
   // string used as prefix for generated action type
   // payload creator callback, should return promise
-  try {
-    const response = await axios.get(POSTS_URL);
-    return [...response.data];
-  } catch (err) {
-    return err.message;
-  }
+  const response = await axios.get(POSTS_URL);
+  return response.data;
 });
 
 const postsSlice = createSlice({
@@ -101,18 +97,25 @@ const postsSlice = createSlice({
           post.date = sub(new Date(), { minutes: min++ }).toISOString();
           post.reactions = {
             thumbsUp: 0,
-            hooray: 0,
+            wow: 0,
             heart: 0,
             rocket: 0,
-            eyes: 0,
+            coffee: 0,
           };
           return post;
         });
+        state.posts = state.posts.concat(loadedPosts);
+      })
+      .addCase(fetchPosts.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.error.message;
       });
   },
 });
 
 export const selectAllPosts = (state) => state.posts.posts;
+export const getPostsStatus = (state) => state.posts.status;
+export const getPostsError = (state) => state.posts.error;
 
 export const { postAdded, reactionAdded } = postsSlice.actions;
 // action creator
