@@ -1,13 +1,12 @@
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectPostById, updatePost } from './postsSlice';
+import { selectPostById, updatePost, deletePost } from './postsSlice';
 import { useParams, useNavigate } from 'react-router-dom';
 
 import { selectAllUsers } from '../users/usersSlice';
 
 const EditPostForm = () => {
   const { postId } = useParams();
-  console.log(postId);
   const navigate = useNavigate();
 
   const post = useSelector((state) => selectPostById(state, Number(postId)));
@@ -23,7 +22,7 @@ const EditPostForm = () => {
   if (!post) {
     return (
       <section>
-        <h2>Post not found, EditPostForm.js</h2>
+        <h2>Post not found</h2>
       </section>
     );
   }
